@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 
 public class BottomLeftSpring : MonoBehaviour
 {
-    public GameObject top_spring;
+    public GameObject topSpring;
 
     public float velocity;
     public float mass = 1.0f; 
@@ -14,7 +13,7 @@ public class BottomLeftSpring : MonoBehaviour
     
     private void Start()
     {
-        _botRightSpring = top_spring.GetComponent<BottomRightSpring>();
+        _botRightSpring = topSpring.GetComponent<BottomRightSpring>();
     }
 
     void FixedUpdate()
@@ -22,14 +21,12 @@ public class BottomLeftSpring : MonoBehaviour
         var botDelta = bottomRestLen - transform.position.x;
         var bottomForce = bottomConst * botDelta;
 
-        var topDelta = (top_spring.transform.position.x - _botRightSpring.rest_length_top) - transform.position.x;
+        var topDelta = (topSpring.transform.position.x - _botRightSpring.rest_length_top) - transform.position.x;
         var topForce = _botRightSpring.spring_constant_top * topDelta;
 
         var forceSum = bottomForce + topForce;
 
-        var newVelocity = velocity + forceSum / mass * Time.deltaTime;
-        transform.position = new Vector3(transform.position.x + newVelocity * Time.deltaTime, transform.position.y, transform.position.z);
-        
-        velocity = newVelocity;
+        velocity += forceSum / mass * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x + velocity * Time.deltaTime, transform.position.y, transform.position.z);
     }
 }

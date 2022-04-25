@@ -7,7 +7,6 @@ public class Spring : MonoBehaviour
     public float restLength = 5;
     public float constant = 0.1F;
 
-    // Update is called once per frame
     void Update()
     {
         var currX = transform.position.x;
