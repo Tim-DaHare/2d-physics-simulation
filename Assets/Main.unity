@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterObj: {fileID: 1585637700}
   mass: 1200
-  mass_of_water: 997
+  waterDensity: 997
 --- !u!65 &19976864
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -377,7 +377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterObj: {fileID: 1585637700}
   mass: 997
-  mass_of_water: 997
+  waterDensity: 997
 --- !u!65 &196573250
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1175,7 +1175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterObj: {fileID: 1585637700}
   mass: 400
-  mass_of_water: 997
+  waterDensity: 997
 --- !u!1 &554054152
 GameObject:
   m_ObjectHideFlags: 0
@@ -1545,7 +1545,7 @@ MonoBehaviour:
   bottom_spring: {fileID: 1813316345}
   velocity: 0
   mass: 10
-  spring_constant_top: 10
+  spring_constant_top: 12
   rest_length_top: 5
 --- !u!65 &1021147763
 BoxCollider:
@@ -2892,7 +2892,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8704fa125bfc1b4987bb88aef330276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  top_spring: {fileID: 1021147760}
+  topSpring: {fileID: 1021147760}
   velocity: 0
   mass: 10
   bottomConst: 15
