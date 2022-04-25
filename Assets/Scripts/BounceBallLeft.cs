@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class BounceBallLeft : MonoBehaviour
 {
-    float speed = 0.0f;
+    private float _velocity;
 
+    private float k = 0.85F;
+    
     public GameObject area;
+    
     private Bounds areaBounds;
-
     private Bounds ballBounds;
     
     void Start()
@@ -17,17 +19,18 @@ public class BounceBallLeft : MonoBehaviour
 
     void FixedUpdate()
     {
+        _velocity -= 9.81f * Time.deltaTime;
         
-        float new_speed = speed - 9.81f * Time.deltaTime;
-        float new_position = transform.position.y + new_speed * Time.deltaTime;
+        float new_position = transform.position.y + _velocity * Time.deltaTime;
+        
         if (new_position - ballBounds.size.y / 2 < areaBounds.min.y)
         {
-            new_position = areaBounds.min.y + ballBounds.size.y / 2;
-            new_speed = -new_speed;
-            new_speed *= 0.85f;
+            transform.position = new Vector3(transform.position.x, 0.5F, transform.position.z);
+            
+            _velocity = -_velocity;
+            _velocity *= k;
         }
 
-        transform.position = new Vector3(transform.position.x, new_position, transform.position.z);
-        speed = new_speed;
+        transform.position += new Vector3(0, _velocity * Time.deltaTime, 0);
     }
 }
