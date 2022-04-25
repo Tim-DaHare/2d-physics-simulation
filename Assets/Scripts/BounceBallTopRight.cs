@@ -37,12 +37,12 @@ public class BounceBallTopRight : MonoBehaviour
         if (pos - _ballBounds.size.y / 2 < bottomBall.transform.position.y + _bottomBallBounds.size.y / 2)
         {
             float bottom_ball_mass = bottomBall.GetComponent<BounceBallBottomRight>().mass;
-            float bottom_ball_speed = bottomBall.GetComponent<BounceBallBottomRight>().speed;
+            float bottom_ball_speed = bottomBall.GetComponent<BounceBallBottomRight>().velocity;
 
             pos = bottomBall.transform.position.y + _bottomBallBounds.size.y / 2 + _ballBounds.size.y / 2;
 
             float updated_speed = (bottom_ball_mass * bottom_ball_speed * (1 + 1) + velocity * (mass - bottom_ball_mass * 1))/(mass + bottom_ball_mass);
-            bottomBall.GetComponent<BounceBallBottomRight>().speed = (mass * velocity * (1 + 1) + bottom_ball_speed * (bottom_ball_mass - mass * 1))/(mass + bottom_ball_mass);
+            bottomBall.GetComponent<BounceBallBottomRight>().velocity = (mass * velocity * (1 + 1) + bottom_ball_speed * (bottom_ball_mass - mass * 1))/(mass + bottom_ball_mass);
             
             velocity = updated_speed;
         }
