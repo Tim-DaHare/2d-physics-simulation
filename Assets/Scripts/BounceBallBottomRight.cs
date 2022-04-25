@@ -7,7 +7,7 @@ public class BounceBallBottomRight : MonoBehaviour
     private Bounds _areaBounds;
     private Bounds _ballBounds;
 
-    public float speed = 0.0f;
+    public float speed;
     public float mass = 1.0f;
 
     void Start()
@@ -18,16 +18,16 @@ public class BounceBallBottomRight : MonoBehaviour
 
     void FixedUpdate()
     {
-        float new_speed = speed - 9.81f * Time.deltaTime;
-        float new_position = transform.position.y + new_speed * Time.deltaTime;
+        float velocity = speed - 9.81f * Time.deltaTime;
+        float pos = transform.position.y + velocity * Time.deltaTime;
 
-        if (new_position - _ballBounds.size.y / 2 < _areaBounds.min.y)
+        if (pos - _ballBounds.size.y / 2 < _areaBounds.min.y)
         {
-            new_position = _areaBounds.min.y + _ballBounds.size.y / 2;
-            new_speed = -new_speed;
+            pos = _areaBounds.min.y + _ballBounds.size.y / 2;
+            velocity = -velocity;
         }
 
-        transform.position = new Vector3(transform.position.x, new_position, transform.position.z);
-        speed = new_speed;
+        transform.position = new Vector3(transform.position.x, pos, transform.position.z);
+        speed = velocity;
     }
 }

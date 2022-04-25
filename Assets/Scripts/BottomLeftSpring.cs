@@ -20,15 +20,15 @@ public class BottomLeftSpring : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        var delta_x_bottom = bottomRestLen - transform.position.x;
-        var spring_force_bottom = bottomConst * delta_x_bottom;
+        var botDelta = bottomRestLen - transform.position.x;
+        var bottomForce = bottomConst * botDelta;
 
-        var delta_x_top = (top_spring.transform.position.x - _botRightSpring.rest_length_top) - transform.position.x;
-        var spring_force_top = _botRightSpring.spring_constant_top * delta_x_top;
+        var topDelta = (top_spring.transform.position.x - _botRightSpring.rest_length_top) - transform.position.x;
+        var topForce = _botRightSpring.spring_constant_top * topDelta;
 
-        var combined_spring_force = spring_force_bottom + spring_force_top;
+        var forceSum = bottomForce + topForce;
 
-        var newVelocity = velocity + combined_spring_force / mass * Time.deltaTime;
+        var newVelocity = velocity + forceSum / mass * Time.deltaTime;
         transform.position = new Vector3(transform.position.x + newVelocity * Time.deltaTime, transform.position.y, transform.position.z);
         
         velocity = newVelocity;
