@@ -9,8 +9,6 @@ public class BottomRightSpring : MonoBehaviour
     public float spring_constant_top = 1.0f;
     public float rest_length_top = 5.0f;
     
-
-    // Update is called once per frame
     void FixedUpdate()
     {
         float delta = (bottom_spring.transform.position.x + rest_length_top) - transform.position.x;

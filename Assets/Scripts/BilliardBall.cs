@@ -13,33 +13,32 @@ public class BilliardBall : MonoBehaviour
     Renderer area;
     Renderer _ballRenderer;
     
-    public BilliardBall lastCollidedBall;
-    
+    public GameObject lastCollidedObj;
     public BilliardBall[] billiards;
     
     void Start()
     {
         velocity = new Vector2(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f));
-    
+        
         area = areaObj.GetComponent<Renderer>();
         _ballRenderer = GetComponent<Renderer>();
     }
     
     void FixedUpdate()
     {
-        // Update position based on velocity
         transform.position = new Vector3(transform.position.x + velocity.x * Time.deltaTime, transform.position.y + velocity.y * Time.deltaTime, transform.position.z);
 
-        // Check if _ballRenderer is in bounds for y
         if (transform.position.y + _ballRenderer.bounds.size.y / 2 > area.bounds.max.y)
         {
             transform.position = new Vector3(transform.position.x, area.bounds.max.y - _ballRenderer.bounds.size.y / 2, transform.position.z);
             velocity = new Vector2(velocity.x, -velocity.y);
+            lastCollidedObj = null;
         }
         if (transform.position.y - _ballRenderer.bounds.size.y / 2 < area.bounds.min.y)
         {
             transform.position = new Vector3(transform.position.x, area.bounds.min.y + _ballRenderer.bounds.size.y / 2, transform.position.z);
             velocity = new Vector2(velocity.x, -velocity.y);
+            lastCollidedObj = null;
         }
         
         // Check if _ballRenderer is in bounds for x
@@ -47,33 +46,29 @@ public class BilliardBall : MonoBehaviour
         {
             transform.position = new Vector3(area.bounds.max.x - _ballRenderer.bounds.size.x / 2, transform.position.y, transform.position.z);
             velocity = new Vector2(-velocity.x, velocity.y);
+            lastCollidedObj = null;
         }
         if (transform.position.x - _ballRenderer.bounds.size.x / 2 < area.bounds.min.x)
         {
             transform.position = new Vector3(area.bounds.min.x + _ballRenderer.bounds.size.x / 2, transform.position.y, transform.position.z);
             velocity = new Vector2(-velocity.x, velocity.y);
+            lastCollidedObj = null;
         }
         
         // Not great for performance i know...
         foreach (BilliardBall ball in billiards)
         {
-            // if _ballRenderer is current _ballRenderer, continue
             if (ball.gameObject == gameObject)
                 continue;
 
-            // Check for collision
             if (CheckIntersect(ball))
             {
-                // To prevent balls from clipping inside one another, they can't collide more than once before hitting something else
-                // I chose not to move the balls out of each other because sometimes that just pushes them into another ball which makes things worse
-                // once the collision is resolved, the balls, if prohibited from interacting, will move out of each other
-                if(lastCollidedBall == ball)
+                if(lastCollidedObj == ball.gameObject)
                     continue;
                 
-                lastCollidedBall = ball;
-                ball.lastCollidedBall = this;
+                lastCollidedObj = ball.gameObject;
+                ball.lastCollidedObj = gameObject;
 
-                // Find the angle that rotates the balls to the x-axis.
                 var diffAngle = GetAngle(ball.gameObject);
                 
                 Vector2 transformedVelocity = RotateVector(velocity, diffAngle);

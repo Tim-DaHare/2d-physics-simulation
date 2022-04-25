@@ -166,13 +166,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 19976861}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2418115a42e0c5c4fa66936adbaafb17, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b8ce12a7cc97284c970e930f9ad2357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   waterObj: {fileID: 1585637700}
   mass: 1200
   mass_of_water: 997
-  test: 0
 --- !u!65 &19976864
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -373,13 +372,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 196573247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2418115a42e0c5c4fa66936adbaafb17, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b8ce12a7cc97284c970e930f9ad2357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   waterObj: {fileID: 1585637700}
   mass: 997
   mass_of_water: 997
-  test: 0
 --- !u!65 &196573250
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -566,7 +564,7 @@ Transform:
   m_GameObject: {fileID: 234862429}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3, y: 3.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_Children: []
   m_Father: {fileID: 1221445168}
   m_RootOrder: 2
@@ -585,7 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   area: {fileID: 350525601}
   velocity: 0
-  mass: 10
+  mass: 17
 --- !u!135 &234862432
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -759,7 +757,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   mass: 1
   areaObj: {fileID: 1104984228}
-  last_collided_with: 
+  lastCollidedObj: {fileID: 0}
+  billiards:
+  - {fileID: 1877763897}
+  - {fileID: 1089561287}
+  - {fileID: 1605522470}
+  - {fileID: 1334676482}
+  - {fileID: 1682141913}
+  - {fileID: 258387207}
 --- !u!1 &350525601
 GameObject:
   m_ObjectHideFlags: 0
@@ -1073,7 +1078,6 @@ GameObject:
   - component: {fileID: 540380098}
   - component: {fileID: 540380097}
   - component: {fileID: 540380100}
-  - component: {fileID: 540380101}
   m_Layer: 0
   m_Name: FloatingBoxLeft
   m_TagString: Untagged
@@ -1164,25 +1168,9 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540380095}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2418115a42e0c5c4fa66936adbaafb17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waterObj: {fileID: 1585637700}
-  mass: 300
-  mass_of_water: 997
-  test: 0
---- !u!114 &540380101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 540380095}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c4618e2a0c367b44a15fbaff411eaad, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b8ce12a7cc97284c970e930f9ad2357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   waterObj: {fileID: 1585637700}
@@ -1827,7 +1815,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   mass: 1
   areaObj: {fileID: 1104984228}
-  last_collided_with: 
+  lastCollidedObj: {fileID: 0}
+  billiards:
+  - {fileID: 1877763897}
+  - {fileID: 1089561287}
+  - {fileID: 1605522470}
+  - {fileID: 1334676482}
+  - {fileID: 1682141913}
+  - {fileID: 258387207}
 --- !u!1 &1104984228
 GameObject:
   m_ObjectHideFlags: 0
@@ -2068,7 +2063,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   mass: 1
   areaObj: {fileID: 1104984228}
-  last_collided_with: 
+  lastCollidedObj: {fileID: 0}
+  billiards:
+  - {fileID: 1877763897}
+  - {fileID: 1089561287}
+  - {fileID: 1605522470}
+  - {fileID: 1334676482}
+  - {fileID: 1682141913}
+  - {fileID: 258387207}
 --- !u!1 &1444637436
 GameObject:
   m_ObjectHideFlags: 0
@@ -2245,7 +2247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   area: {fileID: 350525601}
   bottomBall: {fileID: 234862429}
-  speed: 0
+  velocity: 0
   mass: 10
 --- !u!135 &1547671752
 SphereCollider:
@@ -2515,7 +2517,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   mass: 1
   areaObj: {fileID: 1104984228}
-  last_collided_with: 
+  lastCollidedObj: {fileID: 0}
+  billiards:
+  - {fileID: 1877763897}
+  - {fileID: 1089561287}
+  - {fileID: 1605522470}
+  - {fileID: 1334676482}
+  - {fileID: 1682141913}
+  - {fileID: 258387207}
 --- !u!1 &1667021254
 GameObject:
   m_ObjectHideFlags: 0
@@ -2720,7 +2729,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   mass: 1
   areaObj: {fileID: 1104984228}
-  last_collided_with: 
+  lastCollidedObj: {fileID: 0}
+  billiards:
+  - {fileID: 1877763897}
+  - {fileID: 1089561287}
+  - {fileID: 1605522470}
+  - {fileID: 1334676482}
+  - {fileID: 1682141913}
+  - {fileID: 258387207}
 --- !u!1 &1803117038
 GameObject:
   m_ObjectHideFlags: 0
@@ -3054,7 +3070,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   mass: 1
   areaObj: {fileID: 1104984228}
-  last_collided_with: 
+  lastCollidedObj: {fileID: 0}
+  billiards:
+  - {fileID: 1877763897}
+  - {fileID: 1089561287}
+  - {fileID: 1605522470}
+  - {fileID: 1334676482}
+  - {fileID: 1682141913}
+  - {fileID: 258387207}
 --- !u!1 &1897163894
 GameObject:
   m_ObjectHideFlags: 0

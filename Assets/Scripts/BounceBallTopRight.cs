@@ -8,9 +8,9 @@ public class BounceBallTopRight : MonoBehaviour
     private Bounds _areaBounds;
     private Bounds _ballBounds;
     private Bounds _bottomBallBounds;
-        
+    
     public float velocity;
-    public float mass = 1.0f;
+    public float mass = 1.0F;
 
     private BounceBallBottomRight _botRightBall;
 
@@ -22,12 +22,11 @@ public class BounceBallTopRight : MonoBehaviour
 
         _botRightBall = bottomBall.GetComponent<BounceBallBottomRight>();
     }
-
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         velocity += -9.81f * Time.deltaTime;
-        float pos = transform.position.y + velocity * Time.deltaTime;
+        var pos = transform.position.y + velocity * Time.deltaTime;
 
         if (pos + _ballBounds.size.y / 2 > _areaBounds.max.y)
         {
@@ -37,13 +36,13 @@ public class BounceBallTopRight : MonoBehaviour
 
         if (pos - _ballBounds.size.y / 2 < bottomBall.transform.position.y + _bottomBallBounds.size.y / 2)
         {
-            float botBallmass = _botRightBall.mass;
-            float botBallVelocity = _botRightBall.velocity;
+            var botBallMass = _botRightBall.mass;
+            var botBallVelocity = _botRightBall.velocity;
 
             pos = bottomBall.transform.position.y + _bottomBallBounds.size.y / 2 + _ballBounds.size.y / 2;
 
-            _botRightBall.velocity = (mass * velocity * (1 + 1) + botBallVelocity * (botBallmass - mass * 1))/(mass + botBallmass);
-            velocity = (botBallmass * botBallVelocity * (1 + 1) + velocity * (mass - botBallmass * 1))/(mass + botBallmass);
+            _botRightBall.velocity = (mass * velocity * (1 + 1) + botBallVelocity * (botBallMass - mass * 1)) / (mass + botBallMass);
+            velocity = (botBallMass * botBallVelocity * (1 + 1) + velocity * (mass - botBallMass * 1)) / (mass + botBallMass);
         }
 
         transform.position = new Vector3(transform.position.x, pos, transform.position.z);

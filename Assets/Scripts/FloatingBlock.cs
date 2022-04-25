@@ -2,43 +2,39 @@ using UnityEngine;
 
 public class FloatingBlock : MonoBehaviour
 {
-    public GameObject waterObj;
+    public GameObject waterObj; 
     
-    Bounds _waterBounds;
-    Bounds _bounds;
-    
+    Renderer _waterRenderer;
+    Renderer _blockRenderer;
     float _velocity;
 
-    public float mass = 1.0F;
-    public float waterDensity = 997.0F;
+    public float mass = 1.0f;
+    public float waterDensity = 997.0f;
 
     void Start()
     {
-        _waterBounds = waterObj.GetComponent<Renderer>().bounds;
-        _bounds = GetComponent<Renderer>().bounds;
+        _waterRenderer = waterObj.GetComponent<Renderer>();
+        _blockRenderer = GetComponent<Renderer>();
     }
 
     void FixedUpdate()
     {
-        // get area of block
-        float blockVol = _bounds.size.x * _bounds.size.y;
+        var blockVolume = _blockRenderer.bounds.size.x * _blockRenderer.bounds.size.y;
 
-        float displacedVol = _bounds.max.y < _waterBounds.max.y ? 
-            blockVol : _bounds.min.y > _waterBounds.max.y ? 
-            0.0F : _bounds.size.x * Mathf.Abs(_waterBounds.max.y - _bounds.min.y);
+        var displacedVolume = _blockRenderer.bounds.max.y < _waterRenderer.bounds.max.y ? 
+            blockVolume : _blockRenderer.bounds.min.y > _waterRenderer.bounds.max.y ?
+            0.0F : _blockRenderer.bounds.size.x * Mathf.Abs(_waterRenderer.bounds.max.y - _blockRenderer.bounds.min.y);
 
-        const float gravity = 9.81F;
-        
-        float down = blockVol * mass * -gravity;
-        float up = displacedVol * waterDensity * gravity;
-        float forceSum = up + down;
+        var down = blockVolume * mass * -9.81f;
+        var up = displacedVolume * waterDensity * 9.81f;
+        var combinedForce = up + down;
 
-        _velocity += forceSum / mass * Time.deltaTime;
-        float pos = transform.position.y + _velocity * Time.deltaTime;
+        _velocity += combinedForce / mass * Time.deltaTime;
+        var pos = transform.position.y + _velocity * Time.deltaTime;
 
-        if (pos - _bounds.size.y / 2 < _waterBounds.min.y)
+        if (pos - _blockRenderer.bounds.size.y / 2 < _waterRenderer.bounds.min.y)
         {
-            pos = _waterBounds.min.y + _bounds.size.y / 2;
+            pos = _waterRenderer.bounds.min.y + _blockRenderer.bounds.size.y / 2;
             _velocity = 0.0f;
         }
 

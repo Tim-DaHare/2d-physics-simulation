@@ -17,7 +17,6 @@ public class BottomLeftSpring : MonoBehaviour
         _botRightSpring = top_spring.GetComponent<BottomRightSpring>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         var botDelta = bottomRestLen - transform.position.x;
