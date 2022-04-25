@@ -3,7 +3,7 @@ using UnityEngine;
 public class BounceBallLeft : MonoBehaviour
 {
     private float _velocity;
-
+    
     private float k = 0.85F;
     
     public GameObject area;
@@ -30,7 +30,7 @@ public class BounceBallLeft : MonoBehaviour
             _velocity = -_velocity;
             _velocity *= k;
         }
-
+        
         transform.position += new Vector3(0, _velocity * Time.deltaTime, 0);
     }
 }
