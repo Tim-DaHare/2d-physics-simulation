@@ -7,10 +7,10 @@ public class FloatingBlock : MonoBehaviour
     Bounds _waterBounds;
     Bounds _bounds;
     
-    float speed = 0.0f;
+    float _velocity;
 
     public float mass = 1.0F;
-    public float mass_of_water = 997.0F;
+    public float waterDensity = 997.0F;
 
     void Start()
     {
@@ -18,48 +18,30 @@ public class FloatingBlock : MonoBehaviour
         _bounds = GetComponent<Renderer>().bounds;
     }
 
-    public float test;
-
     void FixedUpdate()
     {
         // get area of block
-        float block_area = _bounds.size.x * _bounds.size.y;
+        float blockVol = _bounds.size.x * _bounds.size.y;
 
-        float area_displaced = 0.0f;
-        if (_bounds.max.y < _waterBounds.max.y)
-        {
-            // block fully under
-            area_displaced = block_area;
-        }
-        else if (_bounds.min.y > _waterBounds.max.y)
-        {
-            // block fully out of water
-            area_displaced = 0.0f;
-        }
-        else
-        {
-            // block halfway
-            area_displaced = _bounds.size.x * Mathf.Abs(_waterBounds.max.y - _bounds.min.y);
-        }
+        float displacedVol = _bounds.max.y < _waterBounds.max.y ? 
+            blockVol : _bounds.min.y > _waterBounds.max.y ? 
+            0.0F : _bounds.size.x * Mathf.Abs(_waterBounds.max.y - _bounds.min.y);
 
         const float gravity = 9.81F;
         
-        float force_down = block_area * mass * -gravity;
-        float force_up = area_displaced * mass_of_water * gravity;
-        float total_force = force_up + force_down;
+        float down = blockVol * mass * -gravity;
+        float up = displacedVol * waterDensity * gravity;
+        float forceSum = up + down;
 
-        test = force_up;
+        _velocity += forceSum / mass * Time.deltaTime;
+        float pos = transform.position.y + _velocity * Time.deltaTime;
 
-        float new_speed = speed + total_force / mass * Time.deltaTime;
-        float new_position = transform.position.y + new_speed * Time.deltaTime;
-
-        if (new_position - _bounds.size.y / 2 < _waterBounds.min.y)
+        if (pos - _bounds.size.y / 2 < _waterBounds.min.y)
         {
-            new_position = _waterBounds.min.y + _bounds.size.y / 2;
-            speed = 0.0f;
+            pos = _waterBounds.min.y + _bounds.size.y / 2;
+            _velocity = 0.0f;
         }
 
-        transform.position = new Vector3(transform.position.x, new_position, transform.position.z);
-        speed = new_speed;
+        transform.position = new Vector3(transform.position.x, pos, transform.position.z);
     }
 }
