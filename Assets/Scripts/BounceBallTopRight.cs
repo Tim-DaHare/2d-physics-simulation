@@ -9,23 +9,24 @@ public class BounceBallTopRight : MonoBehaviour
     private Bounds _ballBounds;
     private Bounds _bottomBallBounds;
         
-    public float speed;
+    public float velocity;
     public float mass = 1.0f;
+
+    private BounceBallBottomRight _botRightBall;
 
     void Start()
     {
         _areaBounds = area.GetComponent<Renderer>().bounds;
         _ballBounds = GetComponent<Renderer>().bounds;
-        _bottomBallBounds = bottomBall.GetComponent<Renderer>().bounds; 
+        _bottomBallBounds = bottomBall.GetComponent<Renderer>().bounds;
+
+        _botRightBall = bottomBall.GetComponent<BounceBallBottomRight>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        // get location bottom_ball
-        // float bottom_ball_x = bottomBall.transform.position.x;
-
-        float velocity = speed - 9.81f * Time.deltaTime;
+        velocity += -9.81f * Time.deltaTime;
         float pos = transform.position.y + velocity * Time.deltaTime;
 
         if (pos + _ballBounds.size.y / 2 > _areaBounds.max.y)
@@ -36,18 +37,15 @@ public class BounceBallTopRight : MonoBehaviour
 
         if (pos - _ballBounds.size.y / 2 < bottomBall.transform.position.y + _bottomBallBounds.size.y / 2)
         {
-            float bottom_ball_mass = bottomBall.GetComponent<BounceBallBottomRight>().mass;
-            float bottom_ball_speed = bottomBall.GetComponent<BounceBallBottomRight>().velocity;
+            float botBallmass = _botRightBall.mass;
+            float botBallVelocity = _botRightBall.velocity;
 
             pos = bottomBall.transform.position.y + _bottomBallBounds.size.y / 2 + _ballBounds.size.y / 2;
 
-            float updated_speed = (bottom_ball_mass * bottom_ball_speed * (1 + 1) + velocity * (mass - bottom_ball_mass * 1))/(mass + bottom_ball_mass);
-            bottomBall.GetComponent<BounceBallBottomRight>().velocity = (mass * velocity * (1 + 1) + bottom_ball_speed * (bottom_ball_mass - mass * 1))/(mass + bottom_ball_mass);
-            
-            velocity = updated_speed;
+            _botRightBall.velocity = (mass * velocity * (1 + 1) + botBallVelocity * (botBallmass - mass * 1))/(mass + botBallmass);
+            velocity = (botBallmass * botBallVelocity * (1 + 1) + velocity * (mass - botBallmass * 1))/(mass + botBallmass);
         }
 
         transform.position = new Vector3(transform.position.x, pos, transform.position.z);
-        speed = velocity;
     }
 }
