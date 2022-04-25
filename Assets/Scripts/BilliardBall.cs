@@ -1,146 +1,133 @@
 using UnityEngine;
 
+/// <summary>
+/// I've got to admit i've had some help with this script x)
+/// </summary>
 public class BilliardBall : MonoBehaviour
 {
     public Vector2 velocity = new Vector2(0.0f, 0.0f);
     public float mass = 1.0f;
-
+    
     public GameObject areaObj;
     
     Renderer area;
-    Renderer this_ball;
+    Renderer _ballRenderer;
     
-    public string last_collided_with = "";
-
+    public BilliardBall lastCollidedBall;
+    
+    public BilliardBall[] billiards;
+    
     void Start()
     {
         velocity = new Vector2(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f));
-
+    
         area = areaObj.GetComponent<Renderer>();
-        this_ball = GetComponent<Renderer>();
+        _ballRenderer = GetComponent<Renderer>();
     }
-
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         // Update position based on velocity
-        // Check if ball is in bounds
-        // Check for collision
-        // Find rotation direction and degrees
-        // Rotate vectors
-        // Solve collision on X-axis
-        // Rotate back vectors
-        // Update both targets
-
-        // Update position based on velocity
         transform.position = new Vector3(transform.position.x + velocity.x * Time.deltaTime, transform.position.y + velocity.y * Time.deltaTime, transform.position.z);
 
-        // Check if ball is in bounds for y
-        if (transform.position.y + this_ball.bounds.size.y / 2 > area.bounds.max.y)
+        // Check if _ballRenderer is in bounds for y
+        if (transform.position.y + _ballRenderer.bounds.size.y / 2 > area.bounds.max.y)
         {
-            transform.position = new Vector3(transform.position.x, area.bounds.max.y - this_ball.bounds.size.y / 2, transform.position.z);
+            transform.position = new Vector3(transform.position.x, area.bounds.max.y - _ballRenderer.bounds.size.y / 2, transform.position.z);
             velocity = new Vector2(velocity.x, -velocity.y);
-            last_collided_with = "top";
         }
-        if (transform.position.y - this_ball.bounds.size.y / 2 < area.bounds.min.y)
+        if (transform.position.y - _ballRenderer.bounds.size.y / 2 < area.bounds.min.y)
         {
-            transform.position = new Vector3(transform.position.x, area.bounds.min.y + this_ball.bounds.size.y / 2, transform.position.z);
+            transform.position = new Vector3(transform.position.x, area.bounds.min.y + _ballRenderer.bounds.size.y / 2, transform.position.z);
             velocity = new Vector2(velocity.x, -velocity.y);
-            last_collided_with = "bottom";
         }
-
-        // Check if ball is in bounds for x
-        if (transform.position.x + this_ball.bounds.size.x / 2 > area.bounds.max.x)
+        
+        // Check if _ballRenderer is in bounds for x
+        if (transform.position.x + _ballRenderer.bounds.size.x / 2 > area.bounds.max.x)
         {
-            transform.position = new Vector3(area.bounds.max.x - this_ball.bounds.size.x / 2, transform.position.y, transform.position.z);
+            transform.position = new Vector3(area.bounds.max.x - _ballRenderer.bounds.size.x / 2, transform.position.y, transform.position.z);
             velocity = new Vector2(-velocity.x, velocity.y);
-            last_collided_with = "right";
         }
-        if (transform.position.x - this_ball.bounds.size.x / 2 < area.bounds.min.x)
+        if (transform.position.x - _ballRenderer.bounds.size.x / 2 < area.bounds.min.x)
         {
-            transform.position = new Vector3(area.bounds.min.x + this_ball.bounds.size.x / 2, transform.position.y, transform.position.z);
+            transform.position = new Vector3(area.bounds.min.x + _ballRenderer.bounds.size.x / 2, transform.position.y, transform.position.z);
             velocity = new Vector2(-velocity.x, velocity.y);
-            last_collided_with = "left";
         }
-
-        // Get all balls
-        GameObject[] all_balls;
-        all_balls = GameObject.FindGameObjectsWithTag("BilliardBall");
-        foreach (GameObject ball in all_balls)
+        
+        // Not great for performance i know...
+        foreach (BilliardBall ball in billiards)
         {
-            // if ball is current ball, continue
-            if (ball == this.gameObject)
-            {
+            // if _ballRenderer is current _ballRenderer, continue
+            if (ball.gameObject == gameObject)
                 continue;
-            }
 
             // Check for collision
-            if (check_collision(ball))
+            if (CheckIntersect(ball))
             {
                 // To prevent balls from clipping inside one another, they can't collide more than once before hitting something else
                 // I chose not to move the balls out of each other because sometimes that just pushes them into another ball which makes things worse
-                // Onse the collision is resolved, the balls, if prohibited from interacting, will move out of each other
-                if(last_collided_with == ball.name)
-                {
+                // once the collision is resolved, the balls, if prohibited from interacting, will move out of each other
+                if(lastCollidedBall == ball)
                     continue;
-                }
                 
-                last_collided_with = ball.name;
-                ball.GetComponent<BilliardBall>().last_collided_with = gameObject.name;
+                lastCollidedBall = ball;
+                ball.lastCollidedBall = this;
 
                 // Find the angle that rotates the balls to the x-axis.
-                float angle_between_balls = get_angle(ball);
+                var diffAngle = GetAngle(ball.gameObject);
                 
-                Vector2 this_rotated_velocity = rotate_vector(velocity, angle_between_balls);
-                Vector2 ball_rotated_velocity = rotate_vector(ball.GetComponent<BilliardBall>().velocity, angle_between_balls);
+                Vector2 transformedVelocity = RotateVector(velocity, diffAngle);
+                Vector2 otherTransformedVelocity = RotateVector(ball.velocity, diffAngle);
 
-                float v1_x = this_rotated_velocity.x;
-                float v2_x = ball_rotated_velocity.x;
-                float m1 = mass;
-                float m2 = ball.GetComponent<BilliardBall>().mass;
-                float k = 1.0f;
+                var v1 = transformedVelocity.x;
+                var v2 = otherTransformedVelocity.x;
+                var m1 = mass;
+                var m2 = ball.mass;
+                var k = 1.0f;
 
-                float u1 = (m2 * v2_x * (k + 1) + v1_x * (m1 - m2 * k)) / (m1 + m2);
-                float u2 = (m1 * v1_x * (k + 1) + v2_x * (m2 - m1 * k)) / (m1 + m2);
+                var u1 = (m2 * v2 * (k + 1) + v1 * (m1 - m2 * k)) / (m1 + m2);
+                var u2 = (m1 * v1 * (k + 1) + v2 * (m2 - m1 * k)) / (m1 + m2);
 
-                this_rotated_velocity.x = u1;
-                ball_rotated_velocity.x = u2;
+                transformedVelocity.x = u1;
+                otherTransformedVelocity.x = u2;
 
-                Vector2 this_unrotated_velocity = rotate_vector(this_rotated_velocity, -angle_between_balls);
-                Vector2 ball_unrotated_velocity = rotate_vector(ball_rotated_velocity, -angle_between_balls);
+                Vector2 baseVelocity = RotateVector(transformedVelocity, -diffAngle);
+                Vector2 ballBaseVelocity = RotateVector(otherTransformedVelocity, -diffAngle);
 
-                velocity = this_unrotated_velocity;
-                ball.GetComponent<BilliardBall>().velocity = ball_unrotated_velocity;
+                velocity = baseVelocity;
+                ball.velocity = ballBaseVelocity;
             }
         }
     }
-
-    bool check_collision(GameObject ball)
+    
+    bool CheckIntersect(BilliardBall ball)
     {
-        float distance = Mathf.Sqrt(Mathf.Pow(ball.transform.position.x - this.transform.position.x, 2) + Mathf.Pow(ball.transform.position.y - this.transform.position.y, 2));
-        float radius = ball.GetComponent<Renderer>().bounds.size.x / 2;
+        var distance = Mathf.Sqrt(Mathf.Pow(ball.transform.position.x - transform.position.x, 2) + Mathf.Pow(ball.transform.position.y - transform.position.y, 2));
+        var radius = ball._ballRenderer.bounds.size.x / 2;
         return (distance < radius * 2);
     }
 
-    float get_angle(GameObject ball)
+    float GetAngle(GameObject ball)
     {
-        float x_diff = ball.transform.position.x - this.transform.position.x;
-        float y_diff = ball.transform.position.y - this.transform.position.y;
-        float angle = Mathf.Atan2(y_diff, x_diff) * Mathf.Rad2Deg;
-        angle = Mathf.Abs(angle) > 90 ? angle < 0 ? -(angle + 180) : -(angle - 180) : -angle;
-        return angle;
+        var xDiff = ball.transform.position.x - transform.position.x;
+        var yDiff = ball.transform.position.y - transform.position.y;
+        var angle = Mathf.Atan2(yDiff, xDiff) * Mathf.Rad2Deg;
+        
+        return Mathf.Abs(angle) > 90 ? angle < 0 ? -(angle + 180) : -(angle - 180) : -angle;
     }
 
-    Vector2 rotate_vector(Vector2 vector, float angle)
+    Vector2 RotateVector(Vector2 vector, float angle)
     {
-        float x = vector.x;
-        float y = vector.y;
-        float new_x = x * Mathf.Cos(rad_angle(angle)) - y * Mathf.Sin(rad_angle(angle));
-        float new_y = x * Mathf.Sin(rad_angle(angle)) + y * Mathf.Cos(rad_angle(angle));
-        return new Vector2(new_x, new_y);
+        var x = vector.x;
+        var y = vector.y;
+        
+        var newX = x * Mathf.Cos(RadAngle(angle)) - y * Mathf.Sin(RadAngle(angle));
+        var newY = x * Mathf.Sin(RadAngle(angle)) + y * Mathf.Cos(RadAngle(angle));
+        
+        return new Vector2(newX, newY);
     }
 
-    float rad_angle(float angle)
+    float RadAngle(float angle)
     {
         return angle * Mathf.PI / 180;
     }
